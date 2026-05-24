@@ -1,0 +1,99 @@
+
+# La version de la syntaxe Docker Compose qu'on utilise
+version: '3.8'
+
+# Déclaration des secrets, Docker va lire ces fichiers sur la machine hôte
+# et les monter en mémoire dans les conteneurs qui en ont besoin
+secrets:
+  
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  credentials:
+    file: ../secrets/credentials.txt
+
+services:
+
+  mariadb:
+    # On construit l'image depuis notre propre Dockerfile
+    build: ./requirements/mariadb
+    # Le nom du conteneur sera exactement "mariadb"
+    container_name: mariadb
+    # Si le conteneur crashe, Docker le redémarre automatiquement
+    restart: always
+    # On monte le volume nommé pour persister les données
+    volume:
+      - db_volumes:/var/lib/mysql
+    # Les variables d'environnement injectées dans le conteneur
+    env_file:
+      - .env
+    # Les secrets que ce conteneur a le droit de lire
+    # Docker les montera sous /run/secrets/ à l'intérieur du conteneur
+    secrets:
+      - db_password
+      - db_root_password
+    # Le réseau interne auquel ce conteneur appartient
+    networks:
+      - inception_network
+  
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: wordpress
+    restart: always
+    # WordPress doit attendre que MariaDB soit démarré
+    depends_on:
+      - mariadb
+    # Le volume partagé qui contient les fichiers WordPress
+    # Ce même volume sera monté dans NGINX pour servir les fichiers statiques
+    volumes:
+      - wp_volume:/var/www/html
+    env_file:
+      - .env
+    # WordPress a besoin des credentials de la base de données
+    # et des credentials de l'administrateur WordPress
+    secrets:
+      - db_password
+      - credentials
+    networks:
+      - inception_network
+  
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    restart: always
+    # NGINX dépend de WordPress car il lui transmet les requêtes PHP
+    depends_on:
+      - wordpress
+    # Le seul port exposé vers l'extérieur de toute l'infrastructure
+    # "443:443" signifie : le port 443 de la machine hôte
+    # est redirigé vers le port 443 du conteneur NGINX
+    ports:
+      - "433:433"
+    # NGINX a besoin d'accéder aux fichiers WordPress
+    # pour servir les fichiers statiques (images, CSS, JS)
+    volumes:
+      - wp_volume:/var/www/html
+    networks:
+      - inception_network
+
+volumes:
+  db_volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      # Les données de MariaDB seront stockées ici sur la machine hôte
+      device: /home/lsadikaj/data/mariadb
+
+  wp_volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      # Les fichiers WordPress seront stockés ici sur la machine hôte
+      device: /home/lsadikaj/data/wordpress
+
+networks:
+  inception_network:
+    driver: bridge

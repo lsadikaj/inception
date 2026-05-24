@@ -1,0 +1,29 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    50-server.cnf                                      :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: lsadikaj <lsadikaj@student.42lausanne.ch>  +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2026/05/23 17:35:47 by lsadikaj          #+#    #+#              #
+#    Updated: 2026/05/23 17:44:41 by lsadikaj         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Indique que toutes les directives qui suivent s'appliquent au processus serveur
+# (mysqld = MySQL Daemon, le processus principal de MariaDB)
+
+[mysqld]
+
+# On dit à MariaDB d'écouter sur toutes les interfaces réseau
+# et pas seulement sur localhost (127.0.0.1)
+
+bind-address = 0.0.0.0
+
+# Le port standard de MariaDB/MySQL - WordPress s'y connectera
+
+port = 3306
+
+# Le dossier où MariaDB stocke physiquement les bases de données
+
+datadir = /var/lib/mysql
