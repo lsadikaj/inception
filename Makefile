@@ -1,14 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: lsadikaj <lsadikaj@student.42lausanne.ch>  +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2026/05/23 16:36:57 by lsadikaj          #+#    #+#              #
-#    Updated: 2026/05/23 16:43:31 by lsadikaj         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
 
 # Le chemain vers le docker-compose.yml
 COMPOSE_FILE = src/docker-compose.yml
