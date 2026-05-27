@@ -1,0 +1,5 @@
+
+.dockerignore
+README.md
+*.md
+*.log
