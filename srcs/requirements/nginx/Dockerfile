@@ -8,8 +8,8 @@ RUN apt-get update && apt-get install -y \
 
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 
-COPY tool/entrypoint.sh /entrypoint.sh
+COPY tools/entrypoint.sh /entrypoint.sh
 
-RUN chmod -x /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 CMD ["/entrypoint.sh"]

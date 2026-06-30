@@ -1,4 +1,3 @@
-
 #!/bin/bash
 set -e
 
@@ -16,7 +15,7 @@ WP_ADMIN_PASSWORD=$(echo "$CREDENTIALS" | cut -d':' -f2)
 # On attend que MariaDB soit prêt à accepter des connexions
 # Cette boucle tente de se connecter toutes les secondes
 echo "Waiting for mariadb to be ready..."
-until mysqladmin ping -h mariadb -u"$MYSQL_USER" -p"$DB_PASSWORD" silend; do
+until mysqladmin ping -h mariadb -u"$MYSQL_USER" -p"$DB_PASSWORD" --silent; do
 	echo "Mariadb not ready yet, retrying in 1 second..."
 	sleep 1
 done
